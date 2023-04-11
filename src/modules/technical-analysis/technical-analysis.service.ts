@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PriceRepository } from '../price/price.repository';
 import { MoreThan } from 'typeorm';
+import { INDICATOR_DESCRIPTIONS } from './indicator-description.constant';
 
 @Injectable()
 export class TechnicalAnalysisService {
@@ -17,27 +18,63 @@ export class TechnicalAnalysisService {
     const volumes = prices.map((price) => price.volume);
 
     const indicators = {
-      sma50: this.calculateSimpleMovingAverage(closePrices, 50),
-      sma200: this.calculateSimpleMovingAverage(closePrices, 200),
-      ema9: this.calculateExponentialMovingAverage(closePrices, 9),
-      macd: this.calculateMovingAverageConvergenceDivergence(closePrices),
-      rsi: this.calculateRelativeStrengthIndex(closePrices, 14),
-      bbands: this.calculateBollingerBands(closePrices, 20, 2),
-      volumeSMA50: this.calculateVolumeSMA(volumes, 50),
-      volumeSMA200: this.calculateVolumeSMA(volumes, 200),
-      fibonacciRetracements: this.calculateFibonacciRetracements(Math.min(...closePrices), Math.max(...closePrices)),
-      stochastic: this.calculateStochastic(
-        prices.map((price) => price.highPrice),
-        prices.map((price) => price.lowPrice),
-        closePrices,
-      ),
-      obv: this.calculateOBV(closePrices, volumes),
-      atr: this.calculateAverageTrueRange(
-        prices.map((price) => price.highPrice),
-        prices.map((price) => price.lowPrice),
-        closePrices,
-        14,
-      ),
+      sma50: {
+        value: this.calculateSimpleMovingAverage(closePrices, 50),
+        description: INDICATOR_DESCRIPTIONS.sma50['pt'],
+      },
+      sma200: {
+        value: this.calculateSimpleMovingAverage(closePrices, 200),
+        description: INDICATOR_DESCRIPTIONS.sma200['pt'],
+      },
+      ema9: {
+        value: this.calculateExponentialMovingAverage(closePrices, 9),
+        description: INDICATOR_DESCRIPTIONS.ema9['pt'],
+      },
+      macd: {
+        value: this.calculateMovingAverageConvergenceDivergence(closePrices),
+        description: INDICATOR_DESCRIPTIONS.macd['pt'],
+      },
+      rsi: {
+        value: this.calculateRelativeStrengthIndex(closePrices, 14),
+        description: INDICATOR_DESCRIPTIONS.rsi['pt'],
+      },
+      bbands: {
+        value: this.calculateBollingerBands(closePrices, 20, 2),
+        description: INDICATOR_DESCRIPTIONS.bbands['pt'],
+      },
+      volumeSMA50: {
+        value: this.calculateVolumeSMA(volumes, 50),
+        description: INDICATOR_DESCRIPTIONS.volumeSMA50['pt'],
+      },
+      volumeSMA200: {
+        value: this.calculateVolumeSMA(volumes, 200),
+        description: INDICATOR_DESCRIPTIONS.volumeSMA200['pt'],
+      },
+      fibonacciRetracements: {
+        value: this.calculateFibonacciRetracements(Math.min(...closePrices), Math.max(...closePrices)),
+        description: INDICATOR_DESCRIPTIONS.fibonacciRetracements['pt'],
+      },
+      stochastic: {
+        value: this.calculateStochastic(
+          prices.map((price) => price.highPrice),
+          prices.map((price) => price.lowPrice),
+          closePrices,
+        ),
+        description: INDICATOR_DESCRIPTIONS.stochastic['pt'],
+      },
+      obv: {
+        value: this.calculateOBV(closePrices, volumes),
+        description: INDICATOR_DESCRIPTIONS.obv['pt'],
+      },
+      atr: {
+        value: this.calculateAverageTrueRange(
+          prices.map((price) => price.highPrice),
+          prices.map((price) => price.lowPrice),
+          closePrices,
+          14,
+        ),
+        description: INDICATOR_DESCRIPTIONS.atr['pt'],
+      },
     };
 
     return { asset, period, prices, ...indicators };
