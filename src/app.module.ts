@@ -4,16 +4,36 @@ import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { envValidate } from './common/config/env.validation';
 import { HealthController } from './modules/health/health.controller';
-import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './nest-core/auth/strategies/jwt.strategy';
-import { AuthModule } from './nest-core/auth/auth.module';
 import { DatabaseModule } from './common/database/database.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ScraperModule } from './modules/scraper/scraper.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Price } from './modules/price/price.entity';
 
 @Module({
   controllers: [HealthController],
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    TypeOrmModule.forRootAsync({
+      useFactory: async () =>
+        await Promise.resolve({
+          type: 'sqlite',
+          database: 'data.sqlite',
+          synchronize: false,
+          migrationsRun: false,
+          logging: false,
+          entities: [__dirname, 'dist/src/modules/**/*entity{.ts,.js}'],
+          migrations: ['../../db/migrations/**/*.{ts,js}'],
+          subscribers: ['./db/subscribers/**/*.{ts,js}'],
+          cli: {
+            entitiesDir: './db/migrations/entities',
+            migrationsDir: './db/migrations',
+            subscribersDir: './db/subscribers',
+          },
+        }),
+    }),
+    ScheduleModule.forRoot(),
+    ScraperModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET_KEY,
       signOptions: { expiresIn: '3h' },
@@ -25,8 +45,6 @@ import { DatabaseModule } from './common/database/database.module';
     }),
     TerminusModule,
     DatabaseModule,
-    AuthModule,
   ],
-  providers: [JwtStrategy],
 })
 export class AppModule {}
