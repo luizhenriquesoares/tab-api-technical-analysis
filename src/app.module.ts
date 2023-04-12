@@ -3,34 +3,21 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { envValidate } from './common/config/env.validation';
-import { HealthController } from './modules/health/health.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { DatabaseModule } from './common/database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ScraperModule } from './modules/scraper/scraper.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Price } from './modules/price/price.entity';
-
 @Module({
-  controllers: [HealthController],
+  controllers: [],
   imports: [
-    TypeOrmModule.forRootAsync({
-      useFactory: async () =>
-        await Promise.resolve({
-          type: 'sqlite',
-          database: 'data.sqlite',
-          synchronize: false,
-          migrationsRun: false,
-          logging: false,
-          entities: [__dirname, 'dist/src/modules/**/*entity{.ts,.js}'],
-          migrations: ['../../db/migrations/**/*.{ts,js}'],
-          subscribers: ['./db/subscribers/**/*.{ts,js}'],
-          cli: {
-            entitiesDir: './db/migrations/entities',
-            migrationsDir: './db/migrations',
-            subscribersDir: './db/subscribers',
-          },
-        }),
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'db/database.sqlite',
+      logging: true,
+      synchronize: false,
+      entities: ['dist/**/*.entity.js'],
+      subscribers: ['dist/db/subscribers/*.js'],
+      migrations: ['dist/db/migrations/*.js'],
     }),
     ScheduleModule.forRoot(),
     ScraperModule,
@@ -44,7 +31,6 @@ import { Price } from './modules/price/price.entity';
       validate: envValidate,
     }),
     TerminusModule,
-    DatabaseModule,
   ],
 })
 export class AppModule {}
