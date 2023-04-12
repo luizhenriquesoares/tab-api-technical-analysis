@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'historical_prices' })
+@Entity({ name: 'prices_v1' })
 @Index(['date', 'variation'])
 export class Price {
   @PrimaryGeneratedColumn()

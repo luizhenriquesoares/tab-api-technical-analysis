@@ -26,4 +26,13 @@ export class PriceService {
   async getLatestPrice(): Promise<Price> {
     return await this.priceRepository.createQueryBuilder('price').orderBy('price.date', 'DESC').getOne();
   }
+
+  async truncateData(): Promise<void> {
+    try {
+      await this.priceRepository.query('DELETE FROM "historical_prices"');
+      await this.priceRepository.query('UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE name = "historical_prices"');
+    } catch (error) {
+      console.error('Erro ao truncar a tabela "historical_prices":', error);
+    }
+  }
 }

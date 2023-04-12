@@ -36,15 +36,15 @@ export const INDICATOR_DESCRIPTIONS = {
     pt: 'Os Retracements de Fibonacci são uma ferramenta de análise técnica usada para identificar potenciais níveis de suporte e resistência com base nas proporções-chave de Fibonacci. Eles podem ser úteis',
   },
   stochastic: {
-    en: '',
-    pt: '',
+    en: 'The Stochastic Oscillator is a momentum indicator that compares the closing price of an asset to its price range over a specific period. Values above 80 indicate overbought conditions, while values below 20 indicate oversold conditions. It can be used to identify potential trend reversals and buying or selling opportunities.',
+    pt: 'O Oscilador Estocástico é um indicador de momentum que compara o preço de fechamento de um ativo com sua faixa de preço durante um período específico. Valores acima de 80 indicam condições de sobrecompra, enquanto valores abaixo de 20 indicam condições de sobrevenda. Pode ser usado para identificar possíveis reversões de tendência e oportunidades de compra ou venda.',
   },
   obv: {
-    en: '',
-    pt: '',
+    en: 'On Balance Volume (OBV) is a technical analysis indicator that uses volume flow to predict changes in stock prices. A rising OBV indicates positive volume pressure, which may lead to higher prices, while a falling OBV indicates negative volume pressure, which may lead to lower prices.',
+    pt: 'O Volume em Balanço (OBV) é um indicador de análise técnica que utiliza o fluxo de volume para prever mudanças nos preços das ações. Um OBV crescente indica pressão de volume positiva, que pode levar a preços mais altos, enquanto um OBV decrescente indica pressão de volume negativa, que pode levar a preços mais baixos.',
   },
   atr: {
-    en: '',
-    pt: '',
+    en: 'The Average True Range (ATR) is a technical analysis indicator that measures market volatility by decomposing the entire range of an asset price for a specific period. Higher ATR values indicate greater volatility, while lower ATR values indicate lower volatility. It can be used to set stop-loss orders and manage risk in trading.',
+    pt: 'O Average True Range (ATR) é um indicador de análise técnica que mede a volatilidade do mercado, decompondo a variação total do preço de um ativo durante um período específico. Valores mais altos de ATR indicam maior volatilidade, enquanto valores mais baixos de ATR indicam menor volatilidade. Pode ser usado para definir ordens de stop-loss e gerenciar riscos no comércio.',
   },
 };

@@ -1,14 +1,14 @@
+import { Price } from './../price/price.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PriceRepository } from '../price/price.repository';
-import { MoreThan } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { INDICATOR_DESCRIPTIONS } from './indicator-description.constant';
 
 @Injectable()
 export class TechnicalAnalysisService {
   constructor(
-    @InjectRepository(PriceRepository)
-    private readonly priceRepository: PriceRepository,
+    @InjectRepository(Price)
+    private readonly priceRepository: Repository<Price>,
   ) {}
 
   public async analyzeAsset(asset: string, period: string) {
@@ -77,11 +77,11 @@ export class TechnicalAnalysisService {
       },
     };
 
-    return { asset, period, prices, ...indicators };
+    return { asset, period, ...indicators };
   }
 
   private async getPricesForPeriod(asset: string, period: string) {
-    return await this.priceRepository.find({
+    const data: any = await this.priceRepository.find({
       where: {
         asset,
         date: MoreThan(new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000)),
@@ -90,6 +90,18 @@ export class TechnicalAnalysisService {
         date: 'ASC',
       },
     });
+    const convertedData = data.map((price) => {
+      return {
+        ...price,
+        highPrice: parseFloat(price.highPrice),
+        lastPrice: parseFloat(price.lastPrice),
+        lowPrice: parseFloat(price.lowPrice),
+        openPrice: parseFloat(price.openPrice),
+        volume: parseFloat(price.volume),
+      };
+    });
+
+    return convertedData;
   }
 
   private calculateSimpleMovingAverage(prices: number[], windowSize: number): number[] {

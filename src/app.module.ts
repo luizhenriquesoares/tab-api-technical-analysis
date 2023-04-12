@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ScraperModule } from './modules/scraper/scraper.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TechnicalAnalysisModules } from './modules/technical-analysis/technical-analysis.module';
 @Module({
   controllers: [],
   imports: [
@@ -31,6 +32,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       validate: envValidate,
     }),
     TerminusModule,
+    TechnicalAnalysisModules,
   ],
 })
 export class AppModule {}
