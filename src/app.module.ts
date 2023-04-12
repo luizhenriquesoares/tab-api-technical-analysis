@@ -3,17 +3,25 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { envValidate } from './common/config/env.validation';
-import { HealthController } from './modules/health/health.controller';
-import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './nest-core/auth/strategies/jwt.strategy';
-import { AuthModule } from './nest-core/auth/auth.module';
-import { DatabaseModule } from './common/database/database.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { ScraperModule } from './modules/scraper/scraper.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TechnicalAnalysisModules } from './modules/technical-analysis/technical-analysis.module';
 @Module({
-  controllers: [HealthController],
+  controllers: [],
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'db/database.sqlite',
+      logging: true,
+      synchronize: false,
+      entities: ['dist/**/*.entity.js'],
+      subscribers: ['dist/db/subscribers/*.js'],
+      migrations: ['dist/db/migrations/*.js'],
+    }),
+    ScheduleModule.forRoot(),
+    ScraperModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET_KEY,
       signOptions: { expiresIn: '3h' },
@@ -24,9 +32,7 @@ import { DatabaseModule } from './common/database/database.module';
       validate: envValidate,
     }),
     TerminusModule,
-    DatabaseModule,
-    AuthModule,
+    TechnicalAnalysisModules,
   ],
-  providers: [JwtStrategy],
 })
 export class AppModule {}
