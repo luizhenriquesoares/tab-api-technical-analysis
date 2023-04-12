@@ -1,8 +1,9 @@
 import { Price } from './../price/price.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { INDICATOR_DESCRIPTIONS } from './indicator-description.constant';
+import * as moment from 'moment';
 
 @Injectable()
 export class TechnicalAnalysisService {
@@ -77,14 +78,20 @@ export class TechnicalAnalysisService {
       },
     };
 
-    return { asset, period, ...indicators };
+    const describe = prices.reduce((acc, obj) => {
+      if (acc === null || obj.dateIndex > acc.dateIndex) {
+        return obj;
+      }
+      return acc;
+    }, null);
+    return { describe, ...indicators };
   }
 
   private async getPricesForPeriod(asset: string, period: string) {
     const data: any = await this.priceRepository.find({
       where: {
         asset,
-        date: MoreThan(new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000)),
+        date: LessThan(new Date(Date.now() - parseInt(period) * 24 * 60 * 60 * 1000)),
       },
       order: {
         date: 'ASC',
@@ -93,6 +100,7 @@ export class TechnicalAnalysisService {
     const convertedData = data.map((price) => {
       return {
         ...price,
+        dateIndex: moment(new Date(price.date)).valueOf(),
         highPrice: parseFloat(price.highPrice),
         lastPrice: parseFloat(price.lastPrice),
         lowPrice: parseFloat(price.lowPrice),
@@ -100,7 +108,6 @@ export class TechnicalAnalysisService {
         volume: parseFloat(price.volume),
       };
     });
-
     return convertedData;
   }
 
